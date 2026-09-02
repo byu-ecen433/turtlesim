@@ -1,8 +1,9 @@
 # ECEN 433 - Lab 2: Using ROS with Turtlesim
 
 Starter code for Lab 2. You will write two ROS nodes that drive and observe the
-turtlesim turtle, launch them together with a launch file, and control one of
-them at runtime with a ROS parameter.
+turtlesim turtle, launch them together with a launch file, control one of them
+at runtime with a ROS parameter, and finish by pointing your driving node at
+your actual Duckiebot using a param file.
 
 The full lab instructions live on the course site. This README covers the
 repository itself: how it is laid out, and how to build and run it.
@@ -13,18 +14,23 @@ Parts II through IV are everything marked `TODO` in these three files:
 
 | File | What it does |
 |---|---|
-| `packages/turtle_control/src/square_node.py` | Publishes `geometry_msgs/Twist` on `turtle1/cmd_vel` to drive the turtle in a repeating square. |
+| `packages/turtle_control/src/square_node.py` | Publishes `duckietown_msgs/Twist2DStamped` on `turtle1/cmd` to drive the turtle in a repeating square. Part V turns its constants into ROS parameters. |
 | `packages/turtle_control/src/direction_node.py` | Subscribes to `turtle1/pose`, works out which way the turtle is facing, and publishes it on `turtle1/direction` at a rate set by the `/direction_pub_rate` parameter. |
-| `packages/turtle_control/launch/turtle_control.launch` | Starts turtlesim plus your nodes. turtlesim is already wired up; add your nodes. |
+| `packages/turtle_control/launch/turtle_control.launch` | Starts turtlesim, the bridge, and your nodes. turtlesim and the bridge are already wired up; add your nodes. |
 
 Everything else - the package, its `CMakeLists.txt` and `package.xml`, the
 launcher script, the Docker setup - is done for you.
 
-**Part V has no starter file.** You write a new node from scratch in
-`packages/turtle_control/src/`, and add it plus a second turtlesim to the
-launch file. You do not need to create a new package - put it in
-`turtle_control` alongside the others. Remember that a new file has to be
-made executable before `roslaunch` will run it.
+## What is provided
+
+Read these; do not edit them.
+
+| File | What it does |
+|---|---|
+| `packages/turtle_control/src/turtle_bridge.py` | Converts the `duckietown_msgs/Twist2DStamped` messages your `square_node` publishes into the `geometry_msgs/Twist` messages turtlesim reads. Your node speaks the Duckiebot's language; this is what lets it move a turtle. It is also the worked example for Part V - its topic names come from a param file, not from its source. |
+| `packages/turtle_control/config/turtle_bridge.yaml` | The bridge's param file. Read it in Part II: `input_topic` is the topic your `square_node` has to publish on. |
+| `packages/turtle_control/config/turtlesim.yaml` | The Part V param file for the turtle. In Part V you write a `duckiebot.yaml` next to it with the same four keys, pointed at your car. |
+
 
 ## Building and running
 
@@ -73,6 +79,7 @@ packages/            your ROS packages - this is where your code goes
   turtle_control/
     src/             node executables (must be chmod +x, and end in .py)
     launch/          launch files
+    config/          ROS param files
 launchers/           bash entry points, one per runnable configuration
                        square.sh  ->  dts devel run -L square
 dependencies-apt.txt apt packages installed into the image (turtlesim is here)

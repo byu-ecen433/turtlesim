@@ -13,15 +13,28 @@
       type  the executable file name - for Python nodes this INCLUDES the .py
       name  what the node will be called
   -->
-
+  
+  <arg name="config" default="turtlesim"/>
+  
   <!--
-    A namespace groups related nodes and topics together. Everything launched
-    inside this group gets /turtlesim/ prefixed onto its relative names (topics, node names, etc).
+    Namespace: everything launched inside this group gets /turtlesim/ prefixed
+    onto its relative names (topics, node names, etc).
   -->
   <group ns="turtlesim">
 
     <!-- The turtle simulator launches as its own node. -->
     <node pkg="turtlesim" type="turtlesim_node" name="sim" output="screen" />
+
+    <!--
+      Provided example for Part V. turtle_bridge does not
+      hard-code its topic names - it reads them from config/turtle_bridge.yaml,
+      loaded by the <rosparam> tag below.
+    -->
+    <node pkg="turtle_control" type="turtle_bridge.py" name="turtle_bridge"
+          output="screen">
+      <rosparam file="$(find turtle_control)/config/turtle_bridge.yaml"
+                subst_value="true" />
+    </node>
 
     <!-- TODO (Part II): launch your square_node here.
 
@@ -32,6 +45,22 @@
     -->
 
     <!-- TODO (Part III): launch your direction_node here, the same way. -->
+
+    <!-- TODO (Part V):
+
+        Do to your square_node what has already been done to turtle_bridge
+        above: load a param file INSIDE its <node> tag
+
+          <node pkg="PACKAGE_NAME" type="FILENAME.py" name="..." output="screen" >
+            <rosparam file="$(find turtle_control)/config/$(arg config).yaml"
+                      subst_value="true" />
+          </node>
+
+        The difference from the bridge: the filename is $(arg config), not a
+        fixed name. That is what lets you swap turtlesim.yaml for
+        duckiebot.yaml from the command line without editing anything.
+        
+    -->
 
   </group>
 
