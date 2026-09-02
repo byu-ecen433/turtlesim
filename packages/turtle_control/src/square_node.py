@@ -15,7 +15,7 @@ to your Duckiebot's wheels in Lab 1:
     msg.omega   angular speed in radians per second, counter-clockwise positive
 
 That is all a differential-drive robot gives you: how fast to go, and how fast
-to spin. There is no sideways. (Part V comes back to this.)
+to spin.
 
 The topic
 ---------

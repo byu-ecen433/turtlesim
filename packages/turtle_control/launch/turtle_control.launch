@@ -13,14 +13,23 @@
       type  the executable file name - for Python nodes this INCLUDES the .py
       name  what the node will be called
   -->
-  
-  <arg name="config" default="turtlesim"/>
-  
+
+  <arg name="robot" default="false"/>
+
   <!--
-    Namespace: everything launched inside this group gets /turtlesim/ prefixed
-    onto its relative names (topics, node names, etc).
+    What we are driving. This one string gets used twice below: as the
+    namespace, and as the name of the param file. That is the Duckietown
+    convention - a robot's config file is named after the robot, so
+    config/turtlesim.yaml for the turtle and config/<robot name>.yaml for yours.
   -->
-  <group ns="turtlesim">
+  <arg name="ns" value="$(optenv VEHICLE_NAME duckiebot)" if="$(arg robot)"/>
+  <arg name="ns" value="turtlesim" unless="$(arg robot)"/>
+
+  <!--
+    Namespace: everything launched inside this group gets /<ns>/ prefixed onto
+    its relative names (topics, node names, etc).
+  -->
+  <group ns="$(arg ns)">
 
     <!-- The turtle simulator launches as its own node. -->
     <node pkg="turtlesim" type="turtlesim_node" name="sim" output="screen" />
@@ -52,14 +61,14 @@
         above: load a param file INSIDE its <node> tag
 
           <node pkg="PACKAGE_NAME" type="FILENAME.py" name="..." output="screen" >
-            <rosparam file="$(find turtle_control)/config/$(arg config).yaml"
+            <rosparam file="$(find turtle_control)/config/$(arg ns).yaml"
                       subst_value="true" />
           </node>
 
-        The difference from the bridge: the filename is $(arg config), not a
-        fixed name. That is what lets you swap turtlesim.yaml for
-        duckiebot.yaml from the command line without editing anything.
-        
+        The difference from the bridge: the filename is $(arg ns), not a fixed
+        name. Flip robot:=true and the same tag loads a different file, for a
+        different robot, with no edit to this file or to your node.
+
     -->
 
   </group>

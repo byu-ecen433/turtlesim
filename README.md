@@ -29,7 +29,6 @@ Read these; do not edit them.
 |---|---|
 | `packages/turtle_control/src/turtle_bridge.py` | Converts the `duckietown_msgs/Twist2DStamped` messages your `square_node` publishes into the `geometry_msgs/Twist` messages turtlesim reads. Your node speaks the Duckiebot's language; this is what lets it move a turtle. It is also the worked example for Part V - its topic names come from a param file, not from its source. |
 | `packages/turtle_control/config/turtle_bridge.yaml` | The bridge's param file. Read it in Part II: `input_topic` is the topic your `square_node` has to publish on. |
-| `packages/turtle_control/config/turtlesim.yaml` | The Part V param file for the turtle. In Part V you write a `duckiebot.yaml` next to it with the same four keys, pointed at your car. |
 
 
 ## Building and running
